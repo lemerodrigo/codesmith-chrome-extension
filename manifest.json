@@ -10,11 +10,12 @@
     },
 
     "permissions": [
-        "tabs", "<all_urls>"
+        // "tabs", "<all_urls>"
+        "debugger"
     ],
 
     "background": {
-        "scripts": ["background.js"]
-        // "persistent": false
+        "scripts": ["vendor/jquery-3.1.1.min.js", "background.js"]
+        // "persistent": true
     }
 }
