@@ -10,10 +10,21 @@
     },
 
     "permissions": [
-        // "tabs", "<all_urls>"
-        "debugger",
+        "tabs",
+        "http://*/*",
+        "https://*/*",
+        "contextMenus",
+        "activeTab",
         "storage",
         "alarms"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["https://*/*", "http://*/*"],
+            "js": ["content.js"],
+            "run_at": "document_end"
+        }
     ],
 
     "background": {
