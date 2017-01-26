@@ -6,7 +6,7 @@
 
     "browser_action": {
         "default_icon": "img/icon.png",
-        "default_popup": "calendar_reminder.html"
+        "default_popup": "popup.html"
     },
 
     "permissions": [
@@ -17,7 +17,17 @@
     ],
 
     "background": {
-        "scripts": ["vendor/moment.min.js", "vendor/jquery-3.1.1.min.js", "background.js", "calendar_reminder.js"]
-        // "persistent": true
-    }
+        "scripts": ["vendor/moment.min.js", "vendor/jquery-3.1.1.min.js", "background.js"],
+        "persistent": false
+    },
+
+    /*"content_scripts": [{
+        "js": [
+            "vendor/jquery-3.1.1.min.js",
+            "popup.js"
+        ],
+        "matches": [
+            "http://*/*", "https://*/*"
+        ]
+    }]*/
 }
