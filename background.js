@@ -1,37 +1,65 @@
-console.log('Background init');
 
-// chrome.alarms.create("getter", {
-//     // when: ,
-//     delayInMinutes: 1,
-//     periodInMinutes: 1
-// });
-
-// chrome.alarms.onAlarm.addListener(function(alarm) {
-//     if (alarm.name === "getter") {
-//         console.log('Alarm')
-//     }
-// });
-
-const dataUrl = 'http://slack-server.elasticbeanstalk.com/calendar/12';
-
-// LOAD DATA.
-var xhr = new XMLHttpRequest();
-xhr.onreadystatechange = parseInput;
-xhr.open("GET", dataUrl, true);
-xhr.send(null);
-
-function parseInput() { 
-    if (xhr.readyState === 4) {
-        if (xhr.responseText) {
-            let json = JSON.parse(xhr.responseText);
-            let dataKeysFixed = fixDataKeys(json);
-            let todayEvents = getTodayEvents(dataKeysFixed);
-            console.log('todayEvents', todayEvents);
-        }
-    }
+// My Object.
+function CalendarReminder() {
+    console.log('Background process initialization...');
+    this.dataUrl = 'http://slack-server.elasticbeanstalk.com/calendar/12';
+    this.todayEvents = [];
 }
 
-function fixDataKeys(data) {
+// Initializer.
+CalendarReminder.prototype.init = function() {
+    this.startLoopers();
+}
+
+// Alarms Loopers.
+CalendarReminder.prototype.startLoopers = function() {
+    let self = this;
+    console.log('Starting loopers...');
+
+    chrome.alarms.create("looper", {
+        delayInMinutes: 0.05,
+        periodInMinutes: 0.05
+    });
+
+    chrome.alarms.onAlarm.addListener((alarm) => {
+        if (alarm.name === "looper") {
+            self.getCalendarData();
+        }
+    });
+}
+
+// The requester.
+CalendarReminder.prototype.getCalendarData = function() {
+    let self = this;
+    $.get(self.dataUrl)
+    .then(function(data) {
+        self.parseData(data);
+    });
+}
+
+// Receiver parser.
+CalendarReminder.prototype.parseData = function(data) { 
+    let dataKeysFixed = this.fixDataKeys(data);
+    this.todayEvents = this.getTodayEvents(dataKeysFixed);
+
+    // Adding moment object to events.
+    this.todayEvents.map((item) => {
+        item['eventDateMoment'] = moment(item.start.dateTime);
+    });
+
+    this.eventsChecker();
+}
+
+// Do we have events in the next 10/n minutes?
+CalendarReminder.prototype.eventsChecker = function() {
+    let now = moment();
+    this.todayEvents.forEach(function(event) {
+        let eventMoment = event.eventDateMoment;
+    });
+}
+
+// Data parser.
+CalendarReminder.prototype.fixDataKeys = function(data) {
     let parsed = {};
     let months = {'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mai': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11};
 
@@ -48,31 +76,19 @@ function fixDataKeys(data) {
     return parsed;
 }
 
-function getToday() {
-    let dateObj = new Date();
-    let month = String(dateObj.getUTCMonth() + 1);
-    let day = String(dateObj.getUTCDate());
-    let year = String(dateObj.getUTCFullYear());
-    if (day.length < 2) day = '0' + day;
-    if (month.length < 2) month = '0' + month;
-    console.log('year', year, 'month', month, 'day', day);
-    return year + month + day;
+// Returns a string in the format YYYYMMDD.
+CalendarReminder.prototype.getToday = function() {
+    return moment().format('YYYYMMDD');
 }
 
-function getTodayEvents(dataKeysFixed) {
-    let today = getToday();
-    console.log(dataKeysFixed);
-    return dataKeysFixed[today];
+// Return an array of objects that corresponds to today events.
+CalendarReminder.prototype.getTodayEvents = function(dataKeysFixed) {
+    return dataKeysFixed[this.getToday()];
 }
 
+// Instantiation.
+let cc = new CalendarReminder().init();
 
-
-        // if (!xhr.responseText || !urlsObj || urlsObj.urls.length == 0) {
-
-// function toggleRunning() {
-//     isRunning = isRunning == 1 ? 0 : 1;
-//     updateIcon();
-// }
 
 // function updateIcon() {
 //     chrome.browserAction.setIcon({path:"images/icon" + currentIcon + ".png"});
@@ -81,31 +97,3 @@ function getTodayEvents(dataKeysFixed) {
 
 //      chrome.browserAction.setBadgeText({text:data.unreadItems});
 // var pollInterval = 1000 * 60; // 1 minute
-
-// function startRequest() {
-//   updateBadge();
-//   window.setTimeout(startRequest, pollInterval);
-// }
-
-// function stopRequest() {
-//   window.clearTimeout(timerId);
-// }
-
-// onload='startRequest()'
-
-// $.getJSON('URL which does NOT contain callback=?', ...);
-
-// var fullURL = browser.extension.getURL("beasts/frog.html");
-
-// var xhr = new XMLHttpRequest();
-// xhr.setRequestHeader("Content-Type", "*/*");
-
-// var resp;
-// xhr.open("GET", "http://www.roblox.com/catalog/json?Subcategory=16&SortType=3&ResultsPerPage=10", true);
-// xhr.onload = function () {
-//     resp = JSON.parse(xhr.responseText);
-// }
-// xhr.send();
-
-
-// var interval = setInterval(visitUrl, maxDefaultSleep);
