@@ -1,5 +1,4 @@
 chrome.storage.local.get(null, (data) => {
-  console.log(data);
   if (data) {
     $('#calendar').val(data.calVal);
     $('#selection').val(data.selVal);
