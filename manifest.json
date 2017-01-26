@@ -6,7 +6,7 @@
 
     "browser_action": {
         "default_icon": "img/icon.png",
-        "default_popup": "popup.html"
+        "default_popup": "calendar_reminder.html"
     },
 
     "permissions": [
@@ -18,6 +18,4 @@
         "scripts": ["vendor/jquery-3.1.1.min.js", "background.js"]
         // "persistent": true
     }
-
-
 }
