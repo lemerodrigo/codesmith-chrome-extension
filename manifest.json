@@ -17,7 +17,7 @@
     ],
 
     "background": {
-        "scripts": ["vendor/moment.min.js", "vendor/jquery-3.1.1.min.js", "background.js"]
+        "scripts": ["vendor/moment.min.js", "vendor/jquery-3.1.1.min.js", "background.js", "calendar_reminder.js"]
         // "persistent": true
     }
 }

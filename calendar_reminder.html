@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Codesmith Calendar Reminders</title>
     <link rel="stylesheet" href="styles.css">
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
-  </head>
-    <body>
-      <div class="main-container">
+</head>
+
+<body>
+    <div class="main-container">
         <div class="calendar-container">
-          <div class="calendar-text">
-            <h3>Calendar</h3>
-          </div>
-          <div class="calendar-selection">
-            <select id="calendar" name="">
+            <div class="calendar-text">
+                <h3>Calendar</h3>
+            </div>
+            <div class="calendar-selection">
+                <select id="calendar" name="">
               <option value="http://slack-server.elasticbeanstalk.com/calendar/junior" selected="selected">Junior</option>
               <option value="http://slack-server.elasticbeanstalk.com/calendar/senior">Senior</option>
             </select>
-          </div>
+            </div>
         </div>
 
         <div class="reminder-container">
-          <div class="reminder-text">
-            <h3>Reminder</h3>
-          </div>
-          <div class="reminder-selection">
-            <select id="selection" name="">
+            <div class="reminder-text">
+                <h3>Reminder</h3>
+            </div>
+            <div class="reminder-selection">
+                <select id="selection" name="">
               <option value="10" selected="selected">10 minutes before</option>
               <option value="30">30 minutes before</option>
               <option value="60">1 hour before</option>
             </select>
-          </div>
+            </div>
         </div>
 
         <button id="button" type="button" name="button">click me</button>
 
-      </div>
-        <script type="text/javascript" src="calendar_reminder.js"></script>
-    </body>
+    </div>
+    <script type="text/javascript" src="calendar_reminder.js"></script>
+</body>
+
 </html>
