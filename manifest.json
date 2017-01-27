@@ -11,6 +11,7 @@
 
     "permissions": [
         "tabs",
+        "<all_urls>",
         "http://*/*",
         "https://*/*",
         "contextMenus",
@@ -19,26 +20,15 @@
         "alarms"
     ],
 
-    "content_scripts": [
-        {
-            "matches": ["https://*/*", "http://*/*"],
-            "js": ["content.js"],
-            "run_at": "document_end"
-        }
-    ],
+    "content_scripts": [{
+        "matches": ["https://*/*", "http://*/*"],
+        "js": ["content.js"],
+        "run_at": "document_end"
+            // "js": ["vendor/jquery-3.1.1.min.js", "content.js"]
+    }],
 
     "background": {
         "scripts": ["vendor/moment.min.js", "vendor/jquery-3.1.1.min.js", "background.js"],
         "persistent": false
-    },
-
-    /*"content_scripts": [{
-        "js": [
-            "vendor/jquery-3.1.1.min.js",
-            "popup.js"
-        ],
-        "matches": [
-            "http://*/*", "https://*/*"
-        ]
-    }]*/
+    }
 }

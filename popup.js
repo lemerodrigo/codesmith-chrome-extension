@@ -1,3 +1,17 @@
+// chrome.extension.onMessage.addListener(function(message, messageSender, sendResponse) {
+//     console.log('some message');
+//     // message is the message you sent, probably an object
+//     // messageSender is an object that contains info about the context that sent the message
+//     // sendResponse is a function to run when you have a response
+// });
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     chrome.runtime.getBackgroundPage(function (bg) {
+//         alert('some');
+//     });
+// });
+
+
 chrome.storage.local.get(null, (data) => {
   if (data) {
     $('#calendar').val(data.calVal);

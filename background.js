@@ -16,7 +16,7 @@ let fakeData = {"Jan 26 2017": [{
         "self":true
     },
     "start": {
-        "dateTime":"2017-01-26T01:57:00-08:00",
+        "dateTime":"2017-01-26T21:20:00-08:00",
         "timeZone":"America/Los_Angeles"
     },
     "end":{
@@ -47,14 +47,8 @@ function CalendarReminder() {
 
 // Initializer.
 CalendarReminder.prototype.init = function() {
-    // this.startLoopers();
     let self = this;
-    chrome.storage.local.get(null, (data) => {
-        console.log(data);
-    });
-    setTimeout(function() {
-        self.triggerReminder(event);
-    }, 5000)
+    this.startLoopers();
 }
 
 // Alarms Loopers.
@@ -63,8 +57,10 @@ CalendarReminder.prototype.startLoopers = function() {
     console.log('Starting loopers...');
 
     chrome.alarms.create("looper", {
-        delayInMinutes: 1.00,
-        periodInMinutes: 1.00
+        delayInMinutes: 0.10,
+        periodInMinutes: 0.10
+        // delayInMinutes: 1.00,
+        // periodInMinutes: 1.00
     });
 
     chrome.alarms.onAlarm.addListener((alarm) => {
@@ -80,6 +76,7 @@ CalendarReminder.prototype.getCalendarData = function() {
     $.get(self.dataUrl)
     .then(function(data) {
         if (USE_FAKE) {
+            console.log('Using fake data');
             self.parseData(fakeData);
         } else {
             self.parseData(data);
@@ -101,12 +98,15 @@ CalendarReminder.prototype.parseData = function(data) {
 
 // Do we have events in the next 10/n minutes?
 CalendarReminder.prototype.eventsChecker = function() {
-    console.log('Events checker...');
     let now = moment();
+
+    console.log('Events length', this.todayEvents.length);
 
     for (let i = 0; i < this.todayEvents.length; i++) {
         let event = this.todayEvents[i];
         let eventMoment = this.todayEvents[i].eventDateMoment;
+
+        console.log('Event date', eventMoment.format('YYYYMMDD HH:mm'));
 
        // Event in the past. Let's discard it.
         if (eventMoment < now) {
@@ -115,7 +115,7 @@ CalendarReminder.prototype.eventsChecker = function() {
 
         let diff = eventMoment.diff(now, 'minutes');
 
-        console.log('now', now.format('LTS'), 'event', eventMoment.format('LTS') ,'diff', diff);
+        console.log('now', now.format('LTS'), 'event', eventMoment.format('LTS') ,'diff', diff, event);
 
         // We have an event that is going to happen in REMINDER_MINUTES minutes.
         if (diff === REMINDER_MINUTES) {
@@ -126,32 +126,11 @@ CalendarReminder.prototype.eventsChecker = function() {
 
 // Reminder window trigger.
 CalendarReminder.prototype.triggerReminder = function(event) {
-    console.log('Calling the popup. There is an event comming!');
-    // console.log(event);
-
-    // chrome.runtime.sendMessage({action: "open_dialog_box"}, function(response) {
-    //     console.log(response);
-    // });
-    // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    //     chrome.tabs.sendMessage(tabs[0].id, {action: "open_dialog_box"}, function(response) {
-    //         console.log('called');
-    //     });  
-    // });
-        //     chrome.tabs.sendMessage(tabs[0].id, {action: "open_dialog_box"}, function(response) {
-    //         console.log('called');
-    //     });  
-    // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    //     console.log('active tab', tabs[0].id);
-    //     chrome.tabs.sendMessage(tabs[0].id, {action: "open_dialog_box"}, function(response) {});  
-    // });
-    chrome.windows.create({
-        type: 'detached_panel',
-        focused: true,
-        url: 'reminder.html',
-        width: 440,
-        height: 400,
-        left: 0,
-        top: 0
+    console.log('Sending message!');
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: event}, function(response) {
+            console.log('Response from the message');
+        });
     });
 }
 
@@ -185,12 +164,3 @@ CalendarReminder.prototype.getTodayEvents = function(dataKeysFixed) {
 
 // Instantiation.
 let cc = new CalendarReminder().init();
-
-
-// function updateIcon() {
-//     chrome.browserAction.setIcon({path:"images/icon" + currentIcon + ".png"});
-//     currentIcon = currentIcon == lastIcon ? firstIcon : currentIcon + 1;
-// }
-
-//      chrome.browserAction.setBadgeText({text:data.unreadItems});
-// var pollInterval = 1000 * 60; // 1 minute
